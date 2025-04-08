@@ -34,30 +34,6 @@ pub trait OrtBase {
         }
     }
 
-    fn print_info(&self) {
-        if let Some(session) = self.sess() {
-            eprintln!("Input names:");
-            for input in &session.inputs {
-                eprintln!("  - {}", input.name);
-            }
-            eprintln!("Output names:");
-            for output in &session.outputs {
-                eprintln!("  - {}", output.name);
-            }
-
-            #[cfg(feature = "cuda")]
-            eprintln!("Configured with: CUDA execution provider");
-
-            #[cfg(feature = "coreml")]
-            eprintln!("Configured with: CoreML execution provider");
-
-            #[cfg(all(not(feature = "cuda"), not(feature = "coreml")))]
-            eprintln!("Configured with: CPU execution provider");
-        } else {
-            eprintln!("Session is not initialized.");
-        }
-    }
-
     fn set_sess(&mut self, sess: Session);
     fn sess(&self) -> Option<&Session>;
 }

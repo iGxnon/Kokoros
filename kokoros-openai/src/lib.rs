@@ -62,8 +62,6 @@ struct SpeechRequest {
 }
 
 pub async fn create_server(tts: TTSKoko) -> Router {
-    println!("create_server()");
-
     Router::new()
         .route("/", get(handle_home))
         .route("/v1/audio/speech", post(handle_tts))

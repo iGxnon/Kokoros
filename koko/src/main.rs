@@ -207,10 +207,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 // Use std::io::stdout() for sync writing
                 let mut stdout = std::io::stdout();
 
-                eprintln!(
-                    "Entering streaming mode. Type text and press Enter. Use Ctrl+D to exit."
-                );
-
                 // Write WAV header first
                 let header = WavHeader::new(1, 24000, 32);
                 header.write_header(&mut stdout)?;
@@ -223,12 +219,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     }
 
                     // Process the line and get audio data
-                    match tts.tts_raw_audio(&stripped_line, &lan, &style, speed, initial_silence) {
+                    match tts.tts_raw_audio(stripped_line, &lan, &style, speed, initial_silence) {
                         Ok(raw_audio) => {
                             // Write the raw audio samples directly
                             write_audio_chunk(&mut stdout, &raw_audio)?;
                             stdout.flush()?;
-                            eprintln!("Audio written to stdout. Ready for another line of text.");
                         }
                         Err(e) => eprintln!("Error processing line: {}", e),
                     }

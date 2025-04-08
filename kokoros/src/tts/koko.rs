@@ -71,11 +71,8 @@ impl TTSKoko {
                 .expect("Failed to create Kokoro TTS model"),
         );
 
-        // TODO: if(not streaming) { model.print_info(); }
-        // model.print_info();
-
         let styles = Self::load_voices(voices_path);
-
+        
         TTSKoko {
             model_path: model_path.to_string(),
             model,
@@ -180,7 +177,6 @@ impl TTSKoko {
             let phonemes = text_to_phonemes(&chunk, lan, None, true, false)
                 .map_err(|e| Box::new(e) as Box<dyn std::error::Error>)?
                 .join("");
-            println!("phonemes: {}", phonemes);
             let mut tokens = tokenize(&phonemes);
 
             for _ in 0..initial_silence.unwrap_or(0) {
@@ -278,7 +274,6 @@ impl TTSKoko {
                 Err(format!("can not found from styles_map: {}", style_name).into())
             }
         } else {
-            eprintln!("parsing style mix");
             let styles: Vec<&str> = style_name.split('+').collect();
 
             let mut style_names = Vec::new();
@@ -292,8 +287,6 @@ impl TTSKoko {
                     }
                 }
             }
-            eprintln!("styles: {:?}, portions: {:?}", style_names, style_portions);
-
             let mut blended_style = vec![vec![0.0; 256]; 1];
 
             for (name, portion) in style_names.iter().zip(style_portions.iter()) {
@@ -333,7 +326,7 @@ impl TTSKoko {
             voices
         };
 
-        println!("voice styles loaded: {:?}", sorted_voices);
+        eprintln!("voice styles loaded: {:?}", sorted_voices);
         map
     }
 }
